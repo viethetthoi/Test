@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Table + Pagination</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .pagination {
+            margin-top: 10px;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            margin: 2px;
+            cursor: pointer;
+        }
+
+        .active {
+            background-color: #007bff;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Danh sách người dùng</h2>
+
+<label>Hiển thị: </label>
+<select id="pageSize">
+    <option value="5">5</option>
+    <option value="10" selected>10</option>
+    <option value="20">20</option>
+</select>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Tên</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+</table>
+
+<div class="pagination" id="pagination"></div>
+
+<script>
+    // ====== DATA FAKE ======
+    const data = [];
+    for (let i = 1; i <= 100; i++) {
+        data.push({
+            id: i,
+            name: "User " + i,
+            email: "user" + i + "@gmail.com"
+        });
+    }
+
+    let currentPage = 1;
+    let pageSize = 10;
+
+    const tableBody = document.getElementById("tableBody");
+    const pagination = document.getElementById("pagination");
+    const pageSizeSelect = document.getElementById("pageSize");
+
+    // ====== RENDER TABLE ======
+    function renderTable() {
+        tableBody.innerHTML = "";
+
+        const start = (currentPage - 1) * pageSize;
+        const end = start + pageSize;
+        const pageData = data.slice(start, end);
+
+        pageData.forEach(item => {
+            const row = `
+                <tr>
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.email}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+    }
+
+    // ====== RENDER PAGINATION ======
+    function renderPagination() {
+        pagination.innerHTML = "";
+
+        const totalPages = Math.ceil(data.length / pageSize);
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btn = document.createElement("button");
+            btn.innerText = i;
+
+            if (i === currentPage) {
+                btn.classList.add("active");
+            }
+
+            btn.onclick = function () {
+                currentPage = i;
+                renderTable();
+                renderPagination();
+            };
+
+            pagination.appendChild(btn);
+        }
+    }
+
+    // ====== CHANGE PAGE SIZE ======
+    pageSizeSelect.addEventListener("change", function () {
+        pageSize = parseInt(this.value);
+        currentPage = 1;
+        renderTable();
+        renderPagination();
+    });
+
+    // ====== INIT ======
+    renderTable();
+    renderPagination();
+
+</script>
+
+</body>
+</html>
