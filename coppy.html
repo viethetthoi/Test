@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dynamic Report</title>
+    <style>
+        body { font-family: Arial; }
+        .box { border: 2px solid #333; padding: 15px; margin-bottom: 20px; }
+        .row { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+        .sub-group { margin-top: 5px; }
+        select { padding: 5px; margin-right: 5px; }
+        button { padding: 5px 10px; margin-left: 3px; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h2>Report công việc</h2>
+
+<!-- ===== DONE ===== -->
+<div class="box">
+    <h3>Công việc đã làm</h3>
+    <div id="done-container">
+        <div class="row">
+            <select name="done[0][main]" class="main-select">
+                <option value="">-- Chọn loại --</option>
+                <option value="dev">Development</option>
+                <option value="test">Testing</option>
+            </select>
+
+            <button type="button" onclick="addRow('done-container')">+</button>
+            <button type="button" onclick="removeRow(this)">-</button>
+
+            <div class="sub-container">
+                <div class="sub-group">
+                    <select name="done[0][sub][]" class="sub-select">
+                        <option value="">-- Chọn chi tiết --</option>
+                    </select>
+                    <button type="button" onclick="addSub(this)">+</button>
+                    <button type="button" onclick="removeSub(this)">-</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== TODO ===== -->
+<div class="box">
+    <h3>Công việc còn nợ</h3>
+    <div id="todo-container">
+        <div class="row">
+            <select name="todo[0][main]" class="main-select">
+                <option value="">-- Chọn loại --</option>
+                <option value="dev">Development</option>
+                <option value="test">Testing</option>
+            </select>
+
+            <button type="button" onclick="addRow('todo-container')">+</button>
+            <button type="button" onclick="removeRow(this)">-</button>
+
+            <div class="sub-container">
+                <div class="sub-group">
+                    <select name="todo[0][sub][]" class="sub-select">
+                        <option value="">-- Chọn chi tiết --</option>
+                    </select>
+                    <button type="button" onclick="addSub(this)">+</button>
+                    <button type="button" onclick="removeSub(this)">-</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== PLAN ===== -->
+<div class="box">
+    <h3>Công việc dự định</h3>
+    <div id="plan-container">
+        <div class="row">
+            <select name="plan[0][main]" class="main-select">
+                <option value="">-- Chọn loại --</option>
+                <option value="dev">Development</option>
+                <option value="test">Testing</option>
+            </select>
+
+            <button type="button" onclick="addRow('plan-container')">+</button>
+            <button type="button" onclick="removeRow(this)">-</button>
+
+            <div class="sub-container">
+                <div class="sub-group">
+                    <select name="plan[0][sub][]" class="sub-select">
+                        <option value="">-- Chọn chi tiết --</option>
+                    </select>
+                    <button type="button" onclick="addSub(this)">+</button>
+                    <button type="button" onclick="removeSub(this)">-</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== ISSUE ===== -->
+<div class="box">
+    <h3>Vấn đề</h3>
+    <div id="issue-container">
+        <div class="row">
+            <select name="issue[0][main]" class="main-select">
+                <option value="">-- Chọn loại --</option>
+                <option value="dev">Development</option>
+                <option value="test">Testing</option>
+            </select>
+
+            <button type="button" onclick="addRow('issue-container')">+</button>
+            <button type="button" onclick="removeRow(this)">-</button>
+
+            <div class="sub-container">
+                <div class="sub-group">
+                    <select name="issue[0][sub][]" class="sub-select">
+                        <option value="">-- Chọn chi tiết --</option>
+                    </select>
+                    <button type="button" onclick="addSub(this)">+</button>
+                    <button type="button" onclick="removeSub(this)">-</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<br>
+<button type="button" onclick="copyReport()">Lưu & Copy</button>
+
+<script>
+const data = {
+    dev: ["Code API", "Fix bug", "Deploy"],
+    test: ["Unit test", "Integration test", "Manual test"]
+};
+
+let doneIndex = 1, todoIndex = 1, planIndex = 1, issueIndex = 1;
+
+// ADD ROW
+function addRow(containerId) {
+    const container = document.getElementById(containerId);
+    let type = containerId.replace('-container','');
+    let index;
+
+    if (type === 'done') index = doneIndex++;
+    else if (type === 'todo') index = todoIndex++;
+    else if (type === 'plan') index = planIndex++;
+    else if (type === 'issue') index = issueIndex++;
+
+    const div = document.createElement("div");
+    div.className = "row";
+
+    div.innerHTML = `
+        <select name="${type}[${index}][main]" class="main-select">
+            <option value="">-- Chọn loại --</option>
+            <option value="dev">Development</option>
+            <option value="test">Testing</option>
+        </select>
+
+        <button type="button" onclick="addRow('${containerId}')">+</button>
+        <button type="button" onclick="removeRow(this)">-</button>
+
+        <div class="sub-container">
+            <div class="sub-group">
+                <select name="${type}[${index}][sub][]" class="sub-select">
+                    <option value="">-- Chọn chi tiết --</option>
+                </select>
+                <button type="button" onclick="addSub(this)">+</button>
+                <button type="button" onclick="removeSub(this)">-</button>
+            </div>
+        </div>
+    `;
+
+    container.appendChild(div);
+}
+
+// REMOVE ROW
+function removeRow(btn) {
+    const container = btn.closest(".box").querySelector("div[id$='container']");
+    if (container.querySelectorAll(".row").length > 1) {
+        btn.closest(".row").remove();
+    } else {
+        alert("Phải có ít nhất 1 dòng!");
+    }
+}
+
+// ADD SUB
+function addSub(btn) {
+    const subContainer = btn.closest(".sub-container");
+    const row = btn.closest(".row");
+
+    const mainSelect = row.querySelector(".main-select");
+    const value = mainSelect.value;
+
+    const mainName = mainSelect.name;
+    const index = mainName.match(/\[(\d+)\]/)[1];
+    const type = mainName.split('[')[0];
+
+    const div = document.createElement("div");
+    div.className = "sub-group";
+
+    const select = document.createElement("select");
+    select.className = "sub-select";
+    select.name = `${type}[${index}][sub][]`;
+    select.innerHTML = '<option value="">-- Chọn chi tiết --</option>';
+
+    if (data[value]) {
+        data[value].forEach(item => {
+            const op = document.createElement("option");
+            op.value = item;
+            op.textContent = item;
+            select.appendChild(op);
+        });
+    }
+
+    const btnAdd = document.createElement("button");
+    btnAdd.type = "button";
+    btnAdd.innerText = "+";
+    btnAdd.onclick = function() { addSub(this); };
+
+    const btnRemove = document.createElement("button");
+    btnRemove.type = "button";
+    btnRemove.innerText = "-";
+    btnRemove.onclick = function() { removeSub(this); };
+
+    div.appendChild(select);
+    div.appendChild(btnAdd);
+    div.appendChild(btnRemove);
+
+    subContainer.appendChild(div);
+}
+
+// REMOVE SUB
+function removeSub(btn) {
+    const subContainer = btn.closest(".sub-container");
+    if (subContainer.children.length > 1) {
+        btn.parentElement.remove();
+    } else {
+        alert("Phải có ít nhất 1 select nhỏ!");
+    }
+}
+
+// CHANGE MAIN
+document.addEventListener("change", function(e) {
+    if (e.target.classList.contains("main-select")) {
+        const row = e.target.closest(".row");
+        const subs = row.querySelectorAll(".sub-select");
+        const value = e.target.value;
+
+        subs.forEach(sub => {
+            sub.innerHTML = '<option value="">-- Chọn chi tiết --</option>';
+
+            if (data[value]) {
+                data[value].forEach(item => {
+                    const op = document.createElement("option");
+                    op.value = item;
+                    op.textContent = item;
+                    sub.appendChild(op);
+                });
+            }
+        });
+    }
+});
+
+// COPY REPORT
+function copyReport() {
+    let result = { done: [], todo: [], plan: [], issue: [] };
+
+    document.querySelectorAll(".box").forEach(box => {
+        let type = box.querySelector("div[id$='container']").id.replace('-container','');
+
+        box.querySelectorAll(".row").forEach(row => {
+            let main = row.querySelector(".main-select").value;
+
+            let subs = [];
+            row.querySelectorAll(".sub-select").forEach(sub => {
+                if (sub.value) subs.push(sub.value);
+            });
+
+            if (main || subs.length > 0) {
+                result[type].push({ main, sub: subs });
+            }
+        });
+    });
+
+    // ===== MARKDOWN =====
+    const titleMap = {
+        done: "Công việc đã làm",
+        todo: "Công việc còn nợ",
+        plan: "Công việc dự định",
+        issue: "Vấn đề"
+    };
+
+    let markdown = "";
+
+    for (let key in result) {
+        markdown += `## ${titleMap[key]}\n`;
+
+        result[key].forEach(item => {
+            markdown += `- ${item.main || "(chưa chọn)"}\n`;
+
+            item.sub.forEach(s => {
+                markdown += `  - ${s}\n`;
+            });
+        });
+
+        markdown += "\n";
+    }
+
+    navigator.clipboard.writeText(markdown)
+        .then(() => {
+            alert("✅ Đã copy Markdown!");
+            console.log(markdown);
+        })
+        .catch(() => alert("❌ Copy thất bại"));
+}
+</script>
+
+</body>
+</html>
