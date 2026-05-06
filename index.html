@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Dynamic Report</title>
-    <style>
-        .box { border: 2px solid #333; padding: 15px; margin-bottom: 20px; }
-        .row { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
-        .sub-group { margin-top: 5px; }
-        select { padding: 5px; margin-right: 5px; }
-        button { padding: 5px 10px; margin-left: 3px; cursor: pointer; }
-    </style>
+<meta charset="UTF-8">
+<title>Dynamic Report</title>
+<style>
+.box { border: 2px solid #333; padding: 15px; margin-bottom: 20px; }
+.row { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+.group { margin-left: 20px; margin-top: 5px; }
+select { padding: 5px; margin-right: 5px; }
+button { padding: 5px 10px; margin-left: 3px; cursor: pointer; }
+</style>
 </head>
 <body>
 
@@ -17,23 +17,34 @@
 
 <h2>Report công việc</h2>
 
-<!-- ===== DONE ===== -->
-<div class="box">
-    <h3>Công việc đã làm</h3>
-    <div id="done-container">
-        <div class="row">
-            <select name="done[0][main]" class="main-select">
-                <option value="">-- Chọn loại --</option>
-                <option value="dev">Development</option>
-                <option value="test">Testing</option>
+<!-- DONE -->
+<div id="done-container" class="box">
+<h3>Done</h3>
+<div class="row">
+    <select name="done[0][main]" class="main">
+        <option value="">Main</option>
+        <option value="dev">Dev</option>
+        <option value="test">Test</option>
+    </select>
+
+    <button type="button" onclick="addTask('done')">+</button>
+    <button type="button" onclick="removeTask(this)">-</button>
+
+    <div class="work-container">
+        <div class="group">
+            <select name="done[0][work][0][name]" class="work">
+                <option value="">Work</option>
             </select>
 
-            <button type="button" onclick="addRow('done-container')">+</button>
-            <button type="button" onclick="removeRow(this)">-</button>
+            <button type="button" onclick="addWork(this)">+</button>
+            <button type="button" onclick="removeWork(this)">-</button>
 
             <div class="sub-container">
-                <div class="sub-group">
-                    <select name="done[0][sub][]" class="sub-select"></select>
+                <div class="group">
+                    <select name="done[0][work][0][sub][]">
+                        <option value="">Sub</option>
+                    </select>
+
                     <button type="button" onclick="addSub(this)">+</button>
                     <button type="button" onclick="removeSub(this)">-</button>
                 </div>
@@ -41,24 +52,36 @@
         </div>
     </div>
 </div>
+</div>
 
-<!-- ===== TODO ===== -->
-<div class="box">
-    <h3>Công việc còn nợ</h3>
-    <div id="todo-container">
-        <div class="row">
-            <select name="todo[0][main]" class="main-select">
-                <option value="">-- Chọn loại --</option>
-                <option value="dev">Development</option>
-                <option value="test">Testing</option>
+<!-- COPY y chang cho 3 cái dưới -->
+<div id="todo-container" class="box">
+<h3>Todo</h3>
+<div class="row">
+    <select name="todo[0][main]" class="main">
+        <option value="">Main</option>
+        <option value="dev">Dev</option>
+        <option value="test">Test</option>
+    </select>
+
+    <button type="button" onclick="addTask('todo')">+</button>
+    <button type="button" onclick="removeTask(this)">-</button>
+
+    <div class="work-container">
+        <div class="group">
+            <select name="todo[0][work][0][name]" class="work">
+                <option value="">Work</option>
             </select>
 
-            <button type="button" onclick="addRow('todo-container')">+</button>
-            <button type="button" onclick="removeRow(this)">-</button>
+            <button type="button" onclick="addWork(this)">+</button>
+            <button type="button" onclick="removeWork(this)">-</button>
 
             <div class="sub-container">
-                <div class="sub-group">
-                    <select name="todo[0][sub][]" class="sub-select"></select>
+                <div class="group">
+                    <select name="todo[0][work][0][sub][]">
+                        <option value="">Sub</option>
+                    </select>
+
                     <button type="button" onclick="addSub(this)">+</button>
                     <button type="button" onclick="removeSub(this)">-</button>
                 </div>
@@ -66,24 +89,35 @@
         </div>
     </div>
 </div>
+</div>
 
-<!-- ===== PLAN ===== -->
-<div class="box">
-    <h3>Công việc dự định</h3>
-    <div id="plan-container">
-        <div class="row">
-            <select name="plan[0][main]" class="main-select">
-                <option value="">-- Chọn loại --</option>
-                <option value="dev">Development</option>
-                <option value="test">Testing</option>
+<div id="plan-container" class="box">
+<h3>Plan</h3>
+<div class="row">
+    <select name="plan[0][main]" class="main">
+        <option value="">Main</option>
+        <option value="dev">Dev</option>
+        <option value="test">Test</option>
+    </select>
+
+    <button type="button" onclick="addTask('plan')">+</button>
+    <button type="button" onclick="removeTask(this)">-</button>
+
+    <div class="work-container">
+        <div class="group">
+            <select name="plan[0][work][0][name]" class="work">
+                <option value="">Work</option>
             </select>
 
-            <button type="button" onclick="addRow('plan-container')">+</button>
-            <button type="button" onclick="removeRow(this)">-</button>
+            <button type="button" onclick="addWork(this)">+</button>
+            <button type="button" onclick="removeWork(this)">-</button>
 
             <div class="sub-container">
-                <div class="sub-group">
-                    <select name="plan[0][sub][]" class="sub-select"></select>
+                <div class="group">
+                    <select name="plan[0][work][0][sub][]">
+                        <option value="">Sub</option>
+                    </select>
+
                     <button type="button" onclick="addSub(this)">+</button>
                     <button type="button" onclick="removeSub(this)">-</button>
                 </div>
@@ -91,24 +125,35 @@
         </div>
     </div>
 </div>
+</div>
 
-<!-- ===== ISSUE ===== -->
-<div class="box">
-    <h3>Vấn đề</h3>
-    <div id="issue-container">
-        <div class="row">
-            <select name="issue[0][main]" class="main-select">
-                <option value="">-- Chọn loại --</option>
-                <option value="dev">Development</option>
-                <option value="test">Testing</option>
+<div id="issue-container" class="box">
+<h3>Issue</h3>
+<div class="row">
+    <select name="issue[0][main]" class="main">
+        <option value="">Main</option>
+        <option value="dev">Dev</option>
+        <option value="test">Test</option>
+    </select>
+
+    <button type="button" onclick="addTask('issue')">+</button>
+    <button type="button" onclick="removeTask(this)">-</button>
+
+    <div class="work-container">
+        <div class="group">
+            <select name="issue[0][work][0][name]" class="work">
+                <option value="">Work</option>
             </select>
 
-            <button type="button" onclick="addRow('issue-container')">+</button>
-            <button type="button" onclick="removeRow(this)">-</button>
+            <button type="button" onclick="addWork(this)">+</button>
+            <button type="button" onclick="removeWork(this)">-</button>
 
             <div class="sub-container">
-                <div class="sub-group">
-                    <select name="issue[0][sub][]" class="sub-select"></select>
+                <div class="group">
+                    <select name="issue[0][work][0][sub][]">
+                        <option value="">Sub</option>
+                    </select>
+
                     <button type="button" onclick="addSub(this)">+</button>
                     <button type="button" onclick="removeSub(this)">-</button>
                 </div>
@@ -116,150 +161,168 @@
         </div>
     </div>
 </div>
+</div>
 
-<br>
 <button type="submit">Lưu</button>
 
 </form>
-
 <script>
 const data = {
-    dev: ["Code API", "Fix bug", "Deploy"],
-    test: ["Unit test", "Integration test", "Manual test"]
+    dev: {
+        backend: ["API", "Database"],
+        frontend: ["UI", "UX"]
+    },
+    test: {
+        auto: ["Unit test"],
+        manual: ["Manual test"]
+    }
 };
 
-// index cho 4 khung
-let doneIndex = 1, todoIndex = 1, planIndex = 1, issueIndex = 1;
+// ===== REINDEX =====
+function reIndex(type){
+    const rows = document.querySelectorAll(`#${type}-container .row`);
 
-// ===== ADD ROW =====
-function addRow(containerId) {
-    const container = document.getElementById(containerId);
-    let type = containerId.replace('-container','');
-    let index;
+    rows.forEach((row,i)=>{
+        row.querySelector(".main").name = `${type}[${i}][main]`;
 
-    if (type === 'done') index = doneIndex++;
-    else if (type === 'todo') index = todoIndex++;
-    else if (type === 'plan') index = planIndex++;
-    else if (type === 'issue') index = issueIndex++;
+        const works = row.querySelectorAll(".work-container > .group");
 
-    const div = document.createElement("div");
-    div.className = "row";
+        works.forEach((w,j)=>{
+            w.querySelector(".work").name = `${type}[${i}][work][${j}][name]`;
 
-    div.innerHTML = `
-        <select name="${type}[${index}][main]" class="main-select">
-            <option value="">-- Chọn loại --</option>
-            <option value="dev">Development</option>
-            <option value="test">Testing</option>
-        </select>
-
-        <button type="button" onclick="addRow('${containerId}')">+</button>
-        <button type="button" onclick="removeRow(this)">-</button>
-
-        <div class="sub-container">
-            <div class="sub-group">
-                <select name="${type}[${index}][sub][]" class="sub-select"></select>
-                <button type="button" onclick="addSub(this)">+</button>
-                <button type="button" onclick="removeSub(this)">-</button>
-            </div>
-        </div>
-    `;
-
-    container.appendChild(div);
+            const subs = w.querySelectorAll("select[name*='sub']");
+            subs.forEach(s=>{
+                s.name = `${type}[${i}][work][${j}][sub][]`;
+            });
+        });
+    });
 }
 
-// ===== REMOVE ROW =====
-function removeRow(btn) {
-    const container = btn.closest(".box").querySelector("div[id$='container']");
-    if (container.querySelectorAll(".row").length > 1) {
+// ===== ADD TASK =====
+function addTask(type){
+    const container = document.getElementById(type+"-container");
+    const row = container.querySelector(".row").cloneNode(true);
+
+    // reset
+    row.querySelectorAll("select").forEach(s=>{
+        s.value = "";
+        if(s.classList.contains("work")){
+            s.innerHTML = '<option value="">Work</option>';
+        }
+        if(s.name.includes("sub")){
+            s.innerHTML = '<option value="">Sub</option>';
+        }
+    });
+
+    container.appendChild(row);
+    reIndex(type);
+}
+
+// ===== REMOVE TASK =====
+function removeTask(btn){
+    const box = btn.closest(".box");
+    const type = box.id.replace("-container","");
+
+    if(box.querySelectorAll(".row").length > 1){
         btn.closest(".row").remove();
-    } else {
-        alert("Phải có ít nhất 1 dòng!");
+        reIndex(type);
+    }
+}
+
+// ===== ADD WORK =====
+function addWork(btn){
+    const row = btn.closest(".row");
+    const container = row.querySelector(".work-container");
+    const type = row.closest(".box").id.replace("-container","");
+
+    const work = container.querySelector(".group").cloneNode(true);
+
+    work.querySelectorAll("select").forEach(s=>{
+        s.value = "";
+        if(s.classList.contains("work")){
+            s.innerHTML = '<option value="">Work</option>';
+        }
+        if(s.name.includes("sub")){
+            s.innerHTML = '<option value="">Sub</option>';
+        }
+    });
+
+    container.appendChild(work);
+    reIndex(type);
+}
+
+// ===== REMOVE WORK =====
+function removeWork(btn){
+    const row = btn.closest(".row");
+    const type = row.closest(".box").id.replace("-container","");
+    const container = btn.closest(".work-container");
+
+    if(container.querySelectorAll(".group").length > 1){
+        btn.closest(".group").remove();
+        reIndex(type);
     }
 }
 
 // ===== ADD SUB =====
-function addSub(btn) {
-    const subContainer = btn.closest(".sub-container");
-    const row = btn.closest(".row");
+function addSub(btn){
+    const work = btn.closest(".group");
+    const container = work.querySelector(".sub-container");
+    const type = work.closest(".box").id.replace("-container","");
 
-    const mainSelect = row.querySelector(".main-select");
-    const value = mainSelect.value;
+    const sub = container.querySelector(".group").cloneNode(true);
 
-    const mainName = mainSelect.name;
-    const match = mainName.match(/\[(\d+)\]/);
-    const index = match ? match[1] : 0;
-    const type = mainName.split('[')[0];
+    sub.querySelector("select").value = "";
+    sub.querySelector("select").innerHTML = '<option value="">Sub</option>';
 
-    const div = document.createElement("div");
-    div.className = "sub-group";
-
-    const select = document.createElement("select");
-    select.className = "sub-select";
-    select.name = `${type}[${index}][sub][]`;
-
-    // 🔥 luôn có option mặc định
-    select.innerHTML = '<option value="">-- Chọn chi tiết --</option>';
-
-    // 🔥 nếu select lớn đã chọn → fill luôn
-    if (data[value]) {
-        data[value].forEach(item => {
-            const op = document.createElement("option");
-            op.value = item;
-            op.textContent = item;
-            select.appendChild(op);
-        });
-    }
-
-    const btnAdd = document.createElement("button");
-    btnAdd.type = "button";
-    btnAdd.innerText = "+";
-    btnAdd.onclick = function() { addSub(this); };
-
-    const btnRemove = document.createElement("button");
-    btnRemove.type = "button";
-    btnRemove.innerText = "-";
-    btnRemove.onclick = function() { removeSub(this); };
-
-    div.appendChild(select);
-    div.appendChild(btnAdd);
-    div.appendChild(btnRemove);
-
-    subContainer.appendChild(div);
+    container.appendChild(sub);
+    reIndex(type);
 }
 
 // ===== REMOVE SUB =====
-function removeSub(btn) {
-    const subContainer = btn.closest(".sub-container");
-    if (subContainer.children.length > 1) {
-        btn.parentElement.remove();
-    } else {
-        alert("Phải có ít nhất 1 select nhỏ!");
+function removeSub(btn){
+    const work = btn.closest(".group");
+    const type = work.closest(".box").id.replace("-container","");
+    const container = btn.closest(".sub-container");
+
+    if(container.querySelectorAll(".group").length > 1){
+        btn.closest(".group").remove();
+        reIndex(type);
     }
 }
 
 // ===== CHANGE =====
-document.addEventListener("change", function(e) {
-    if (e.target.classList.contains("main-select")) {
+document.addEventListener("change", function(e){
+
+    if(e.target.classList.contains("main")){
         const row = e.target.closest(".row");
-        const subs = row.querySelectorAll(".sub-select");
+        const works = row.querySelectorAll(".work");
 
-        const value = e.target.value;
-
-        subs.forEach(sub => {
-            sub.innerHTML = '<option value="">-- Chọn chi tiết --</option>';
-
-            if (data[value]) {
-                data[value].forEach(item => {
-                    const op = document.createElement("option");
-                    op.value = item;
-                    op.textContent = item;
-                    sub.appendChild(op);
+        works.forEach(w=>{
+            w.innerHTML = `<option value="">Work</option>`;
+            if(data[e.target.value]){
+                Object.keys(data[e.target.value]).forEach(k=>{
+                    w.innerHTML += `<option value="${k}">${k}</option>`;
                 });
             }
         });
     }
+
+    if(e.target.classList.contains("work")){
+        const workDiv = e.target.closest(".group");
+        const row = workDiv.closest(".row");
+
+        const main = row.querySelector(".main").value;
+        const subs = workDiv.querySelectorAll("select[name*='sub']");
+
+        subs.forEach(s=>{
+            s.innerHTML = `<option value="">Sub</option>`;
+            if(data[main] && data[main][e.target.value]){
+                data[main][e.target.value].forEach(x=>{
+                    s.innerHTML += `<option value="${x}">${x}</option>`;
+                });
+            }
+        });
+    }
+
 });
 </script>
-
-</body>
-</html>
