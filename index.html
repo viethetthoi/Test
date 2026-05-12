@@ -3,326 +3,637 @@
 <head>
 <meta charset="UTF-8">
 <title>Dynamic Report</title>
+
 <style>
-.box { border: 2px solid #333; padding: 15px; margin-bottom: 20px; }
-.row { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
-.group { margin-left: 20px; margin-top: 5px; }
-select { padding: 5px; margin-right: 5px; }
-button { padding: 5px 10px; margin-left: 3px; cursor: pointer; }
+
+body{
+    font-family: Arial;
+    padding:20px;
+}
+
+.type{
+    border:2px solid #333;
+    padding:15px;
+    margin-bottom:20px;
+}
+
+.project{
+    border:1px solid #999;
+    padding:10px;
+    margin-top:10px;
+}
+
+.task{
+    border:1px dashed #666;
+    padding:10px;
+    margin-top:10px;
+}
+
+.work{
+    border:1px solid #ccc;
+    padding:10px;
+    margin-top:10px;
+}
+
+button{
+    margin:5px;
+    cursor:pointer;
+}
+
+select,input{
+    padding:5px;
+    margin:5px;
+}
+
+pre{
+    background:#eee;
+    padding:10px;
+    margin-top:20px;
+}
+
 </style>
 </head>
 <body>
 
-<form method="POST" action="save.php">
+<div id="app"></div>
 
-<h2>Report công việc</h2>
+<button id="get-json">
+    GET JSON
+</button>
 
-<!-- DONE -->
-<div id="done-container" class="box">
-<h3>Done</h3>
-<div class="row">
-    <select name="done[0][main]" class="main">
-        <option value="">Main</option>
-        <option value="dev">Dev</option>
-        <option value="test">Test</option>
-    </select>
+<pre id="result"></pre>
 
-    <button type="button" onclick="addTask('done')">+</button>
-    <button type="button" onclick="removeTask(this)">-</button>
-
-    <div class="work-container">
-        <div class="group">
-            <select name="done[0][work][0][name]" class="work">
-                <option value="">Work</option>
-            </select>
-
-            <button type="button" onclick="addWork(this)">+</button>
-            <button type="button" onclick="removeWork(this)">-</button>
-
-            <div class="sub-container">
-                <div class="group">
-                    <select name="done[0][work][0][sub][]">
-                        <option value="">Sub</option>
-                    </select>
-
-                    <button type="button" onclick="addSub(this)">+</button>
-                    <button type="button" onclick="removeSub(this)">-</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<!-- COPY y chang cho 3 cái dưới -->
-<div id="todo-container" class="box">
-<h3>Todo</h3>
-<div class="row">
-    <select name="todo[0][main]" class="main">
-        <option value="">Main</option>
-        <option value="dev">Dev</option>
-        <option value="test">Test</option>
-    </select>
-
-    <button type="button" onclick="addTask('todo')">+</button>
-    <button type="button" onclick="removeTask(this)">-</button>
-
-    <div class="work-container">
-        <div class="group">
-            <select name="todo[0][work][0][name]" class="work">
-                <option value="">Work</option>
-            </select>
-
-            <button type="button" onclick="addWork(this)">+</button>
-            <button type="button" onclick="removeWork(this)">-</button>
-
-            <div class="sub-container">
-                <div class="group">
-                    <select name="todo[0][work][0][sub][]">
-                        <option value="">Sub</option>
-                    </select>
-
-                    <button type="button" onclick="addSub(this)">+</button>
-                    <button type="button" onclick="removeSub(this)">-</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<div id="plan-container" class="box">
-<h3>Plan</h3>
-<div class="row">
-    <select name="plan[0][main]" class="main">
-        <option value="">Main</option>
-        <option value="dev">Dev</option>
-        <option value="test">Test</option>
-    </select>
-
-    <button type="button" onclick="addTask('plan')">+</button>
-    <button type="button" onclick="removeTask(this)">-</button>
-
-    <div class="work-container">
-        <div class="group">
-            <select name="plan[0][work][0][name]" class="work">
-                <option value="">Work</option>
-            </select>
-
-            <button type="button" onclick="addWork(this)">+</button>
-            <button type="button" onclick="removeWork(this)">-</button>
-
-            <div class="sub-container">
-                <div class="group">
-                    <select name="plan[0][work][0][sub][]">
-                        <option value="">Sub</option>
-                    </select>
-
-                    <button type="button" onclick="addSub(this)">+</button>
-                    <button type="button" onclick="removeSub(this)">-</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<div id="issue-container" class="box">
-<h3>Issue</h3>
-<div class="row">
-    <select name="issue[0][main]" class="main">
-        <option value="">Main</option>
-        <option value="dev">Dev</option>
-        <option value="test">Test</option>
-    </select>
-
-    <button type="button" onclick="addTask('issue')">+</button>
-    <button type="button" onclick="removeTask(this)">-</button>
-
-    <div class="work-container">
-        <div class="group">
-            <select name="issue[0][work][0][name]" class="work">
-                <option value="">Work</option>
-            </select>
-
-            <button type="button" onclick="addWork(this)">+</button>
-            <button type="button" onclick="removeWork(this)">-</button>
-
-            <div class="sub-container">
-                <div class="group">
-                    <select name="issue[0][work][0][sub][]">
-                        <option value="">Sub</option>
-                    </select>
-
-                    <button type="button" onclick="addSub(this)">+</button>
-                    <button type="button" onclick="removeSub(this)">-</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-
-<button type="submit">Lưu</button>
-
-</form>
 <script>
-const data = {
-    dev: {
-        backend: ["API", "Database"],
-        frontend: ["UI", "UX"]
-    },
-    test: {
-        auto: ["Unit test"],
-        manual: ["Manual test"]
-    }
+
+// ==========================
+// FAKE DATA
+// ==========================
+
+const projects = [
+    {id:1,name:"Project A"},
+    {id:2,name:"Project B"}
+];
+
+const tasks = {
+    1:[
+        {id:11,name:"API"},
+        {id:12,name:"UI"}
+    ],
+    2:[
+        {id:21,name:"Database"},
+        {id:22,name:"Report"}
+    ]
 };
 
-// ===== REINDEX =====
-function reIndex(type){
-    const rows = document.querySelectorAll(`#${type}-container .row`);
+const works = {
+    11:[
+        {id:111,name:"Create API"},
+        {id:112,name:"Fix API"}
+    ],
+    12:[
+        {id:121,name:"Create UI"}
+    ],
+    21:[
+        {id:211,name:"Optimize DB"}
+    ],
+    22:[
+        {id:221,name:"Export Excel"}
+    ]
+};
 
-    rows.forEach((row,i)=>{
-        row.querySelector(".main").name = `${type}[${i}][main]`;
 
-        const works = row.querySelectorAll(".work-container > .group");
+// ==========================
+// TYPES
+// ==========================
 
-        works.forEach((w,j)=>{
-            w.querySelector(".work").name = `${type}[${i}][work][${j}][name]`;
+const types = [
+    "done",
+    "issue",
+    "plan",
+    "debts"
+];
 
-            const subs = w.querySelectorAll("select[name*='sub']");
-            subs.forEach(s=>{
-                s.name = `${type}[${i}][work][${j}][sub][]`;
+
+// ==========================
+// RENDER TYPES
+// ==========================
+
+const app = document.getElementById("app");
+
+types.forEach(type=>{
+
+    app.innerHTML += `
+    
+        <div class="type"
+             data-type="${type}">
+             
+            <h2>
+                ${type.toUpperCase()}
+            </h2>
+
+            <button class="add-project">
+                + Project
+            </button>
+
+            <div class="projects"></div>
+
+        </div>
+    
+    `;
+});
+
+
+// ==========================
+// PROJECT HTML
+// ==========================
+
+function projectTemplate(){
+
+    return `
+    
+        <div class="project"
+             data-project-id="">
+
+            <select class="project-select">
+
+                <option value="">
+                    Choose Project
+                </option>
+
+                ${projects.map(project=>`
+                
+                    <option value="${project.id}">
+                        ${project.name}
+                    </option>
+                
+                `).join("")}
+
+            </select>
+
+            <button class="add-task">
+                + Task
+            </button>
+
+            <button class="remove-project">
+                - Project
+            </button>
+
+            <div class="tasks"></div>
+
+        </div>
+    
+    `;
+}
+
+
+// ==========================
+// TASK HTML
+// ==========================
+
+function taskTemplate(){
+
+    return `
+    
+        <div class="task"
+             data-task-id="">
+
+            <select class="task-select">
+
+                <option value="">
+                    Choose Task
+                </option>
+
+            </select>
+
+            <button class="add-work">
+                + Work
+            </button>
+
+            <button class="remove-task">
+                - Task
+            </button>
+
+            <div class="works"></div>
+
+        </div>
+    
+    `;
+}
+
+
+// ==========================
+// WORK HTML
+// ==========================
+
+function workTemplate(){
+
+    return `
+    
+        <div class="work"
+             data-work-id="">
+
+            <select class="work-select">
+
+                <option value="">
+                    Choose Work
+                </option>
+
+            </select>
+
+            <input type="text"
+                   class="status"
+                   placeholder="Status">
+
+            <button class="remove-work">
+                - Work
+            </button>
+
+        </div>
+    
+    `;
+}
+
+
+// ==========================
+// CHANGE
+// ==========================
+
+document.addEventListener("change",function(e){
+
+    // ======================
+    // PROJECT CHANGE
+    // ======================
+
+    if(e.target.classList.contains("project-select")){
+
+        const project =
+            e.target.closest(".project");
+
+        const projectId =
+            e.target.value;
+
+        project.dataset.projectId =
+            projectId;
+
+        // reset task
+        project.querySelectorAll(".task")
+        .forEach(task=>{
+
+            task.dataset.taskId = "";
+
+            task.querySelector(".task-select")
+            .innerHTML = `
+                <option value="">
+                    Choose Task
+                </option>
+            `;
+
+            task.querySelectorAll(".work")
+            .forEach(work=>{
+
+                work.dataset.workId = "";
+
+                work.querySelector(".work-select")
+                .innerHTML = `
+                    <option value="">
+                        Choose Work
+                    </option>
+                `;
             });
+
         });
-    });
-}
 
-// ===== ADD TASK =====
-function addTask(type){
-    const container = document.getElementById(type+"-container");
-    const row = container.querySelector(".row").cloneNode(true);
+        // load task options
+        project.querySelectorAll(".task-select")
+        .forEach(select=>{
 
-    // reset
-    row.querySelectorAll("select").forEach(s=>{
-        s.value = "";
-        if(s.classList.contains("work")){
-            s.innerHTML = '<option value="">Work</option>';
-        }
-        if(s.name.includes("sub")){
-            s.innerHTML = '<option value="">Sub</option>';
-        }
-    });
+            select.innerHTML = `
+                <option value="">
+                    Choose Task
+                </option>
+            `;
 
-    container.appendChild(row);
-    reIndex(type);
-}
+            if(tasks[projectId]){
 
-// ===== REMOVE TASK =====
-function removeTask(btn){
-    const box = btn.closest(".box");
-    const type = box.id.replace("-container","");
+                tasks[projectId]
+                .forEach(task=>{
 
-    if(box.querySelectorAll(".row").length > 1){
-        btn.closest(".row").remove();
-        reIndex(type);
-    }
-}
-
-// ===== ADD WORK =====
-function addWork(btn){
-    const row = btn.closest(".row");
-    const container = row.querySelector(".work-container");
-    const type = row.closest(".box").id.replace("-container","");
-
-    const work = container.querySelector(".group").cloneNode(true);
-
-    work.querySelectorAll("select").forEach(s=>{
-        s.value = "";
-        if(s.classList.contains("work")){
-            s.innerHTML = '<option value="">Work</option>';
-        }
-        if(s.name.includes("sub")){
-            s.innerHTML = '<option value="">Sub</option>';
-        }
-    });
-
-    container.appendChild(work);
-    reIndex(type);
-}
-
-// ===== REMOVE WORK =====
-function removeWork(btn){
-    const row = btn.closest(".row");
-    const type = row.closest(".box").id.replace("-container","");
-    const container = btn.closest(".work-container");
-
-    if(container.querySelectorAll(".group").length > 1){
-        btn.closest(".group").remove();
-        reIndex(type);
-    }
-}
-
-// ===== ADD SUB =====
-function addSub(btn){
-    const work = btn.closest(".group");
-    const container = work.querySelector(".sub-container");
-    const type = work.closest(".box").id.replace("-container","");
-
-    const sub = container.querySelector(".group").cloneNode(true);
-
-    sub.querySelector("select").value = "";
-    sub.querySelector("select").innerHTML = '<option value="">Sub</option>';
-
-    container.appendChild(sub);
-    reIndex(type);
-}
-
-// ===== REMOVE SUB =====
-function removeSub(btn){
-    const work = btn.closest(".group");
-    const type = work.closest(".box").id.replace("-container","");
-    const container = btn.closest(".sub-container");
-
-    if(container.querySelectorAll(".group").length > 1){
-        btn.closest(".group").remove();
-        reIndex(type);
-    }
-}
-
-// ===== CHANGE =====
-document.addEventListener("change", function(e){
-
-    if(e.target.classList.contains("main")){
-        const row = e.target.closest(".row");
-        const works = row.querySelectorAll(".work");
-
-        works.forEach(w=>{
-            w.innerHTML = `<option value="">Work</option>`;
-            if(data[e.target.value]){
-                Object.keys(data[e.target.value]).forEach(k=>{
-                    w.innerHTML += `<option value="${k}">${k}</option>`;
+                    select.innerHTML += `
+                    
+                        <option value="${task.id}">
+                            ${task.name}
+                        </option>
+                    
+                    `;
                 });
             }
+
         });
+
     }
 
-    if(e.target.classList.contains("work")){
-        const workDiv = e.target.closest(".group");
-        const row = workDiv.closest(".row");
 
-        const main = row.querySelector(".main").value;
-        const subs = workDiv.querySelectorAll("select[name*='sub']");
+    // ======================
+    // TASK CHANGE
+    // ======================
 
-        subs.forEach(s=>{
-            s.innerHTML = `<option value="">Sub</option>`;
-            if(data[main] && data[main][e.target.value]){
-                data[main][e.target.value].forEach(x=>{
-                    s.innerHTML += `<option value="${x}">${x}</option>`;
+    if(e.target.classList.contains("task-select")){
+
+        const task =
+            e.target.closest(".task");
+
+        const taskId =
+            e.target.value;
+
+        task.dataset.taskId =
+            taskId;
+
+        // reset work
+        task.querySelectorAll(".work")
+        .forEach(work=>{
+
+            work.dataset.workId = "";
+
+            work.querySelector(".work-select")
+            .innerHTML = `
+                <option value="">
+                    Choose Work
+                </option>
+            `;
+
+        });
+
+        // load work
+        task.querySelectorAll(".work-select")
+        .forEach(select=>{
+
+            select.innerHTML = `
+                <option value="">
+                    Choose Work
+                </option>
+            `;
+
+            if(works[taskId]){
+
+                works[taskId]
+                .forEach(work=>{
+
+                    select.innerHTML += `
+                    
+                        <option value="${work.id}">
+                            ${work.name}
+                        </option>
+                    
+                    `;
                 });
             }
+
         });
+
+    }
+
+
+    // ======================
+    // WORK CHANGE
+    // ======================
+
+    if(e.target.classList.contains("work-select")){
+
+        const work =
+            e.target.closest(".work");
+
+        work.dataset.workId =
+            e.target.value;
     }
 
 });
+
+
+// ==========================
+// CLICK
+// ==========================
+
+document.addEventListener("click",function(e){
+
+    // ======================
+    // ADD PROJECT
+    // ======================
+
+    if(e.target.classList.contains("add-project")){
+
+        const type =
+            e.target.closest(".type");
+
+        type.querySelector(".projects")
+        .insertAdjacentHTML(
+            "beforeend",
+            projectTemplate()
+        );
+    }
+
+
+    // ======================
+    // ADD TASK
+    // ======================
+
+    if(e.target.classList.contains("add-task")){
+
+        const project =
+            e.target.closest(".project");
+
+        project.querySelector(".tasks")
+        .insertAdjacentHTML(
+            "beforeend",
+            taskTemplate()
+        );
+
+        const taskSelect =
+            project.querySelector(
+                ".tasks .task:last-child .task-select"
+            );
+
+        const projectId =
+            project.dataset.projectId;
+
+        if(tasks[projectId]){
+
+            tasks[projectId]
+            .forEach(task=>{
+
+                taskSelect.innerHTML += `
+                
+                    <option value="${task.id}">
+                        ${task.name}
+                    </option>
+                
+                `;
+            });
+        }
+
+    }
+
+
+    // ======================
+    // ADD WORK
+    // ======================
+
+    if(e.target.classList.contains("add-work")){
+
+        const task =
+            e.target.closest(".task");
+
+        task.querySelector(".works")
+        .insertAdjacentHTML(
+            "beforeend",
+            workTemplate()
+        );
+
+        const workSelect =
+            task.querySelector(
+                ".works .work:last-child .work-select"
+            );
+
+        const taskId =
+            task.dataset.taskId;
+
+        if(works[taskId]){
+
+            works[taskId]
+            .forEach(work=>{
+
+                workSelect.innerHTML += `
+                
+                    <option value="${work.id}">
+                        ${work.name}
+                    </option>
+                
+                `;
+            });
+        }
+
+    }
+
+
+    // ======================
+    // REMOVE PROJECT
+    // ======================
+
+    if(e.target.classList.contains("remove-project")){
+
+        e.target.closest(".project").remove();
+    }
+
+
+    // ======================
+    // REMOVE TASK
+    // ======================
+
+    if(e.target.classList.contains("remove-task")){
+
+        e.target.closest(".task").remove();
+    }
+
+
+    // ======================
+    // REMOVE WORK
+    // ======================
+
+    if(e.target.classList.contains("remove-work")){
+
+        e.target.closest(".work").remove();
+    }
+
+});
+
+
+// ==========================
+// GET JSON
+// ==========================
+
+function getData(){
+
+    return Array.from(
+        document.querySelectorAll(".type")
+    ).map(type=>{
+
+        return {
+
+            type:
+                type.dataset.type,
+
+            projects: Array.from(
+                type.querySelectorAll(
+                    ":scope > .projects > .project"
+                )
+            ).map(project=>{
+
+                return {
+
+                    project_id:
+                        project.dataset.projectId,
+
+                    tasks: Array.from(
+                        project.querySelectorAll(
+                            ":scope > .tasks > .task"
+                        )
+                    ).map(task=>{
+
+                        return {
+
+                            task_id:
+                                task.dataset.taskId,
+
+                            works: Array.from(
+                                task.querySelectorAll(
+                                    ":scope > .works > .work"
+                                )
+                            ).map(work=>{
+
+                                return {
+
+                                    work_id:
+                                        work.dataset.workId,
+
+                                    status:
+                                        work.querySelector(".status").value
+
+                                };
+
+                            })
+
+                        };
+
+                    })
+
+                };
+
+            })
+
+        };
+
+    });
+
+}
+
+
+// ==========================
+// SHOW JSON
+// ==========================
+
+document.getElementById("get-json")
+.addEventListener("click",function(){
+
+    const data = getData();
+
+    console.log(data);
+
+    document.getElementById("result")
+    .textContent =
+        JSON.stringify(data,null,2);
+
+});
+
 </script>
+
+</body>
+</html>
