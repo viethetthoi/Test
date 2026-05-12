@@ -35,14 +35,19 @@ body{
     margin-top:10px;
 }
 
-button{
-    margin:5px;
-    cursor:pointer;
+.row{
+    margin-top:10px;
 }
 
-select,input{
+select,
+input{
     padding:5px;
-    margin:5px;
+    margin-right:5px;
+}
+
+button{
+    padding:5px 10px;
+    cursor:pointer;
 }
 
 pre{
@@ -57,7 +62,7 @@ pre{
 
 <div id="app"></div>
 
-<button id="get-json">
+<button id="show-json">
     GET JSON
 </button>
 
@@ -65,46 +70,38 @@ pre{
 
 <script>
 
-// ==========================
-// FAKE DATA
-// ==========================
+// =====================================
+// DATA
+// =====================================
 
-const projects = [
+const projectData = [
     {id:1,name:"Project A"},
     {id:2,name:"Project B"}
 ];
 
-const tasks = {
+const taskData = {
+
     1:[
         {id:11,name:"API"},
         {id:12,name:"UI"}
     ],
+
     2:[
         {id:21,name:"Database"},
         {id:22,name:"Report"}
     ]
+
 };
 
-const works = {
-    11:[
-        {id:111,name:"Create API"},
-        {id:112,name:"Fix API"}
-    ],
-    12:[
-        {id:121,name:"Create UI"}
-    ],
-    21:[
-        {id:211,name:"Optimize DB"}
-    ],
-    22:[
-        {id:221,name:"Export Excel"}
-    ]
-};
+const workData = [
 
+    {id:'dev',name:"Dev"},
+    {id:'test',name:"Test"},
+    {id:'review',name:"Review"},
+    {id:'checklist',name:"Checklist"},
+    {id:'investigation',name:"Investigation"}
 
-// ==========================
-// TYPES
-// ==========================
+];
 
 const types = [
     "done",
@@ -114,71 +111,81 @@ const types = [
 ];
 
 
-// ==========================
-// RENDER TYPES
-// ==========================
+// =====================================
+// CREATE TYPE
+// =====================================
 
-const app = document.getElementById("app");
+function createType(type){
 
-types.forEach(type=>{
-
-    app.innerHTML += `
+    return `
     
         <div class="type"
              data-type="${type}">
-             
+
             <h2>
                 ${type.toUpperCase()}
             </h2>
 
-            <button class="add-project">
-                + Project
-            </button>
+            <div class="projects">
 
-            <div class="projects"></div>
+                ${createProject()}
+
+            </div>
 
         </div>
     
     `;
-});
+}
 
 
-// ==========================
-// PROJECT HTML
-// ==========================
+// =====================================
+// CREATE PROJECT
+// =====================================
 
-function projectTemplate(){
+function createProject(){
 
     return `
     
         <div class="project"
              data-project-id="">
 
-            <select class="project-select">
+            <!-- PROJECT -->
 
-                <option value="">
-                    Choose Project
-                </option>
+            <div class="row">
 
-                ${projects.map(project=>`
-                
-                    <option value="${project.id}">
-                        ${project.name}
+                <select class="project-select">
+
+                    <option value="">
+                        Choose Project
                     </option>
-                
-                `).join("")}
 
-            </select>
+                    ${projectData.map(project=>`
+                    
+                        <option value="${project.id}">
+                            ${project.name}
+                        </option>
+                    
+                    `).join("")}
 
-            <button class="add-task">
-                + Task
-            </button>
+                </select>
 
-            <button class="remove-project">
-                - Project
-            </button>
+                <button class="add-project">
+                    + Project
+                </button>
 
-            <div class="tasks"></div>
+                <button class="remove-project">
+                    - Project
+                </button>
+
+            </div>
+
+            <!-- TASKS -->
+
+            <div class="tasks">
+
+                ${createTask()}
+
+            </div>
 
         </div>
     
@@ -186,34 +193,54 @@ function projectTemplate(){
 }
 
 
-// ==========================
-// TASK HTML
-// ==========================
+// =====================================
+// CREATE TASK
+// =====================================
 
-function taskTemplate(){
+function createTask(){
 
     return `
     
         <div class="task"
              data-task-id="">
 
-            <select class="task-select">
+            <div class="row">
 
-                <option value="">
-                    Choose Task
-                </option>
+                <select class="task-select">
 
-            </select>
+                    <option value="">
+                        Choose Task
+                    </option>
 
-            <button class="add-work">
-                + Work
-            </button>
+                </select>
 
-            <button class="remove-task">
-                - Task
-            </button>
+                <input type="number"
+                       class="percent"
+                       placeholder="%"
+                       min="0"
+                       max="100">
 
-            <div class="works"></div>
+                <input type="text"
+                       class="time"
+                       placeholder="Time">
+
+                <button class="add-task">
+                    + Task
+                </button>
+
+                <button class="remove-task">
+                    - Task
+                </button>
+
+            </div>
+
+            <!-- WORKS -->
+
+            <div class="works">
+
+                ${createWork()}
+
+            </div>
 
         </div>
     
@@ -221,32 +248,48 @@ function taskTemplate(){
 }
 
 
-// ==========================
-// WORK HTML
-// ==========================
+// =====================================
+// CREATE WORK
+// =====================================
 
-function workTemplate(){
+function createWork(){
 
     return `
     
         <div class="work"
              data-work-id="">
 
-            <select class="work-select">
+            <div class="row">
 
-                <option value="">
-                    Choose Work
-                </option>
+                <select class="work-select">
 
-            </select>
+                    <option value="">
+                        Choose Work
+                    </option>
 
-            <input type="text"
-                   class="status"
-                   placeholder="Status">
+                    ${workData.map(work=>`
+                    
+                        <option value="${work.id}">
+                            ${work.name}
+                        </option>
+                    
+                    `).join("")}
 
-            <button class="remove-work">
-                - Work
-            </button>
+                </select>
+
+                <input type="text"
+                       class="status"
+                       placeholder="Status">
+
+                <button class="add-work">
+                    + Work
+                </button>
+
+                <button class="remove-work">
+                    - Work
+                </button>
+
+            </div>
 
         </div>
     
@@ -254,148 +297,134 @@ function workTemplate(){
 }
 
 
-// ==========================
+// =====================================
+// RESET
+// =====================================
+
+function resetProject(project){
+
+    project.dataset.projectId = "";
+}
+
+function resetTask(task){
+
+    task.dataset.taskId = "";
+}
+
+function resetWork(work){
+
+    work.dataset.workId = "";
+}
+
+
+// =====================================
+// LOAD TASK OPTIONS
+// =====================================
+
+function loadTaskOptions(project){
+
+    const projectId =
+        project.dataset.projectId;
+
+    project.querySelectorAll(".task-select")
+    .forEach(select=>{
+
+        select.innerHTML = `
+        
+            <option value="">
+                Choose Task
+            </option>
+        
+        `;
+
+        if(taskData[projectId]){
+
+            taskData[projectId]
+            .forEach(task=>{
+
+                select.innerHTML += `
+                
+                    <option value="${task.id}">
+                        ${task.name}
+                    </option>
+                
+                `;
+            });
+
+        }
+
+    });
+
+}
+
+
+// =====================================
+// RENDER
+// =====================================
+
+const app =
+    document.getElementById("app");
+
+types.forEach(type=>{
+
+    app.innerHTML += createType(type);
+
+});
+
+
+// =====================================
 // CHANGE
-// ==========================
+// =====================================
 
 document.addEventListener("change",function(e){
 
-    // ======================
-    // PROJECT CHANGE
-    // ======================
+    // =============================
+    // PROJECT
+    // =============================
 
     if(e.target.classList.contains("project-select")){
 
         const project =
             e.target.closest(".project");
 
-        const projectId =
+        project.dataset.projectId =
             e.target.value;
 
-        project.dataset.projectId =
-            projectId;
-
-        // reset task
         project.querySelectorAll(".task")
         .forEach(task=>{
 
-            task.dataset.taskId = "";
-
-            task.querySelector(".task-select")
-            .innerHTML = `
-                <option value="">
-                    Choose Task
-                </option>
-            `;
+            resetTask(task);
 
             task.querySelectorAll(".work")
             .forEach(work=>{
 
-                work.dataset.workId = "";
+                resetWork(work);
 
-                work.querySelector(".work-select")
-                .innerHTML = `
-                    <option value="">
-                        Choose Work
-                    </option>
-                `;
             });
 
         });
 
-        // load task options
-        project.querySelectorAll(".task-select")
-        .forEach(select=>{
-
-            select.innerHTML = `
-                <option value="">
-                    Choose Task
-                </option>
-            `;
-
-            if(tasks[projectId]){
-
-                tasks[projectId]
-                .forEach(task=>{
-
-                    select.innerHTML += `
-                    
-                        <option value="${task.id}">
-                            ${task.name}
-                        </option>
-                    
-                    `;
-                });
-            }
-
-        });
-
+        loadTaskOptions(project);
     }
 
 
-    // ======================
-    // TASK CHANGE
-    // ======================
+    // =============================
+    // TASK
+    // =============================
 
     if(e.target.classList.contains("task-select")){
 
         const task =
             e.target.closest(".task");
 
-        const taskId =
-            e.target.value;
-
         task.dataset.taskId =
-            taskId;
-
-        // reset work
-        task.querySelectorAll(".work")
-        .forEach(work=>{
-
-            work.dataset.workId = "";
-
-            work.querySelector(".work-select")
-            .innerHTML = `
-                <option value="">
-                    Choose Work
-                </option>
-            `;
-
-        });
-
-        // load work
-        task.querySelectorAll(".work-select")
-        .forEach(select=>{
-
-            select.innerHTML = `
-                <option value="">
-                    Choose Work
-                </option>
-            `;
-
-            if(works[taskId]){
-
-                works[taskId]
-                .forEach(work=>{
-
-                    select.innerHTML += `
-                    
-                        <option value="${work.id}">
-                            ${work.name}
-                        </option>
-                    
-                    `;
-                });
-            }
-
-        });
-
+            e.target.value;
     }
 
 
-    // ======================
-    // WORK CHANGE
-    // ======================
+    // =============================
+    // WORK
+    // =============================
 
     if(e.target.classList.contains("work-select")){
 
@@ -409,15 +438,15 @@ document.addEventListener("change",function(e){
 });
 
 
-// ==========================
+// =====================================
 // CLICK
-// ==========================
+// =====================================
 
 document.addEventListener("click",function(e){
 
-    // ======================
+    // =============================
     // ADD PROJECT
-    // ======================
+    // =============================
 
     if(e.target.classList.contains("add-project")){
 
@@ -427,14 +456,33 @@ document.addEventListener("click",function(e){
         type.querySelector(".projects")
         .insertAdjacentHTML(
             "beforeend",
-            projectTemplate()
+            createProject()
         );
     }
 
 
-    // ======================
+    // =============================
+    // REMOVE PROJECT
+    // =============================
+
+    if(e.target.classList.contains("remove-project")){
+
+        const type =
+            e.target.closest(".type");
+
+        const projects =
+            type.querySelectorAll(".project");
+
+        if(projects.length > 1){
+
+            e.target.closest(".project").remove();
+        }
+    }
+
+
+    // =============================
     // ADD TASK
-    // ======================
+    // =============================
 
     if(e.target.classList.contains("add-task")){
 
@@ -444,38 +492,35 @@ document.addEventListener("click",function(e){
         project.querySelector(".tasks")
         .insertAdjacentHTML(
             "beforeend",
-            taskTemplate()
+            createTask()
         );
 
-        const taskSelect =
-            project.querySelector(
-                ".tasks .task:last-child .task-select"
-            );
-
-        const projectId =
-            project.dataset.projectId;
-
-        if(tasks[projectId]){
-
-            tasks[projectId]
-            .forEach(task=>{
-
-                taskSelect.innerHTML += `
-                
-                    <option value="${task.id}">
-                        ${task.name}
-                    </option>
-                
-                `;
-            });
-        }
-
+        loadTaskOptions(project);
     }
 
 
-    // ======================
+    // =============================
+    // REMOVE TASK
+    // =============================
+
+    if(e.target.classList.contains("remove-task")){
+
+        const project =
+            e.target.closest(".project");
+
+        const tasks =
+            project.querySelectorAll(".task");
+
+        if(tasks.length > 1){
+
+            e.target.closest(".task").remove();
+        }
+    }
+
+
+    // =============================
     // ADD WORK
-    // ======================
+    // =============================
 
     if(e.target.classList.contains("add-work")){
 
@@ -485,70 +530,35 @@ document.addEventListener("click",function(e){
         task.querySelector(".works")
         .insertAdjacentHTML(
             "beforeend",
-            workTemplate()
+            createWork()
         );
-
-        const workSelect =
-            task.querySelector(
-                ".works .work:last-child .work-select"
-            );
-
-        const taskId =
-            task.dataset.taskId;
-
-        if(works[taskId]){
-
-            works[taskId]
-            .forEach(work=>{
-
-                workSelect.innerHTML += `
-                
-                    <option value="${work.id}">
-                        ${work.name}
-                    </option>
-                
-                `;
-            });
-        }
-
     }
 
 
-    // ======================
-    // REMOVE PROJECT
-    // ======================
-
-    if(e.target.classList.contains("remove-project")){
-
-        e.target.closest(".project").remove();
-    }
-
-
-    // ======================
-    // REMOVE TASK
-    // ======================
-
-    if(e.target.classList.contains("remove-task")){
-
-        e.target.closest(".task").remove();
-    }
-
-
-    // ======================
+    // =============================
     // REMOVE WORK
-    // ======================
+    // =============================
 
     if(e.target.classList.contains("remove-work")){
 
-        e.target.closest(".work").remove();
+        const task =
+            e.target.closest(".task");
+
+        const works =
+            task.querySelectorAll(".work");
+
+        if(works.length > 1){
+
+            e.target.closest(".work").remove();
+        }
     }
 
 });
 
 
-// ==========================
+// =====================================
 // GET JSON
-// ==========================
+// =====================================
 
 function getData(){
 
@@ -583,6 +593,12 @@ function getData(){
                             task_id:
                                 task.dataset.taskId,
 
+                            percent:
+                                task.querySelector(".percent").value,
+
+                            time:
+                                task.querySelector(".time").value,
+
                             works: Array.from(
                                 task.querySelectorAll(
                                     ":scope > .works > .work"
@@ -616,11 +632,11 @@ function getData(){
 }
 
 
-// ==========================
+// =====================================
 // SHOW JSON
-// ==========================
+// =====================================
 
-document.getElementById("get-json")
+document.getElementById("show-json")
 .addEventListener("click",function(){
 
     const data = getData();
