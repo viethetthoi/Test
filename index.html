@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Dynamic Report</title>
+<title>Dynamic Report Edit</title>
 
 <style>
 
@@ -71,12 +71,14 @@ pre{
 <script>
 
 // =====================================
-// DATA
+// MASTER DATA
 // =====================================
 
 const projectData = [
+
     {id:1,name:"Project A"},
     {id:2,name:"Project B"}
+
 ];
 
 const taskData = {
@@ -103,6 +105,66 @@ const workData = [
 
 ];
 
+
+// =====================================
+// EDIT DATA
+// =====================================
+
+const editData = [
+
+    {
+
+        type: "done",
+
+        projects: [
+
+            {
+
+                id: 100,
+                project_id: 1,
+
+                tasks: [
+
+                    {
+
+                        id: 200,
+                        task_id: 11,
+                        percent: 80,
+                        time: "2h",
+
+                        works: [
+
+                            {
+                                id: 300,
+                                work_id: "dev",
+                                status: "done api"
+                            },
+
+                            {
+                                id: 301,
+                                work_id: "review",
+                                status: "review api"
+                            }
+
+                        ]
+
+                    }
+
+                ]
+
+            }
+
+        ]
+
+    }
+
+];
+
+
+// =====================================
+// TYPES
+// =====================================
+
 const types = [
     "done",
     "issue",
@@ -126,11 +188,7 @@ function createType(type){
                 ${type.toUpperCase()}
             </h2>
 
-            <div class="projects">
-
-                ${createProject()}
-
-            </div>
+            <div class="projects"></div>
 
         </div>
     
@@ -142,14 +200,16 @@ function createType(type){
 // CREATE PROJECT
 // =====================================
 
-function createProject(){
+function createProject(
+    recordId = "",
+    projectId = ""
+){
 
     return `
     
         <div class="project"
-             data-project-id="">
-
-            <!-- PROJECT -->
+             data-id="${recordId}"
+             data-project-id="${projectId}">
 
             <div class="row">
 
@@ -161,7 +221,10 @@ function createProject(){
 
                     ${projectData.map(project=>`
                     
-                        <option value="${project.id}">
+                        <option
+                            value="${project.id}"
+                            ${project.id == projectId ? "selected" : ""}
+                        >
                             ${project.name}
                         </option>
                     
@@ -179,13 +242,7 @@ function createProject(){
 
             </div>
 
-            <!-- TASKS -->
-
-            <div class="tasks">
-
-                ${createTask()}
-
-            </div>
+            <div class="tasks"></div>
 
         </div>
     
@@ -197,12 +254,19 @@ function createProject(){
 // CREATE TASK
 // =====================================
 
-function createTask(){
+function createTask(
+    projectId = "",
+    recordId = "",
+    taskId = "",
+    percent = "",
+    time = ""
+){
 
     return `
     
         <div class="task"
-             data-task-id="">
+             data-id="${recordId}"
+             data-task-id="${taskId}">
 
             <div class="row">
 
@@ -212,17 +276,32 @@ function createTask(){
                         Choose Task
                     </option>
 
+                    ${
+                        taskData[projectId]
+                        ? taskData[projectId].map(task=>`
+                        
+                            <option
+                                value="${task.id}"
+                                ${task.id == taskId ? "selected" : ""}
+                            >
+                                ${task.name}
+                            </option>
+                        
+                        `).join("")
+                        : ""
+                    }
+
                 </select>
 
                 <input type="number"
                        class="percent"
                        placeholder="%"
-                       min="0"
-                       max="100">
+                       value="${percent}">
 
                 <input type="text"
                        class="time"
-                       placeholder="Time">
+                       placeholder="Time"
+                       value="${time}">
 
                 <button class="add-task">
                     + Task
@@ -234,13 +313,7 @@ function createTask(){
 
             </div>
 
-            <!-- WORKS -->
-
-            <div class="works">
-
-                ${createWork()}
-
-            </div>
+            <div class="works"></div>
 
         </div>
     
@@ -252,12 +325,17 @@ function createTask(){
 // CREATE WORK
 // =====================================
 
-function createWork(){
+function createWork(
+    recordId = "",
+    workId = "",
+    status = ""
+){
 
     return `
     
         <div class="work"
-             data-work-id="">
+             data-id="${recordId}"
+             data-work-id="${workId}">
 
             <div class="row">
 
@@ -269,7 +347,10 @@ function createWork(){
 
                     ${workData.map(work=>`
                     
-                        <option value="${work.id}">
+                        <option
+                            value="${work.id}"
+                            ${work.id == workId ? "selected" : ""}
+                        >
                             ${work.name}
                         </option>
                     
@@ -279,7 +360,8 @@ function createWork(){
 
                 <input type="text"
                        class="status"
-                       placeholder="Status">
+                       placeholder="Status"
+                       value="${status}">
 
                 <button class="add-work">
                     + Work
@@ -298,26 +380,6 @@ function createWork(){
 
 
 // =====================================
-// RESET
-// =====================================
-
-function resetProject(project){
-
-    project.dataset.projectId = "";
-}
-
-function resetTask(task){
-
-    task.dataset.taskId = "";
-}
-
-function resetWork(work){
-
-    work.dataset.workId = "";
-}
-
-
-// =====================================
 // LOAD TASK OPTIONS
 // =====================================
 
@@ -328,6 +390,9 @@ function loadTaskOptions(project){
 
     project.querySelectorAll(".task-select")
     .forEach(select=>{
+
+        const selected =
+            select.value;
 
         select.innerHTML = `
         
@@ -344,7 +409,10 @@ function loadTaskOptions(project){
 
                 select.innerHTML += `
                 
-                    <option value="${task.id}">
+                    <option
+                        value="${task.id}"
+                        ${task.id == selected ? "selected" : ""}
+                    >
                         ${task.name}
                     </option>
                 
@@ -359,7 +427,7 @@ function loadTaskOptions(project){
 
 
 // =====================================
-// RENDER
+// RENDER TYPES
 // =====================================
 
 const app =
@@ -370,6 +438,95 @@ types.forEach(type=>{
     app.innerHTML += createType(type);
 
 });
+
+
+// =====================================
+// RENDER EDIT DATA
+// =====================================
+
+function renderEditData(data){
+
+    data.forEach(typeData=>{
+
+        const typeEl =
+            document.querySelector(
+                `[data-type="${typeData.type}"]`
+            );
+
+        const projectsEl =
+            typeEl.querySelector(".projects");
+
+        projectsEl.innerHTML = "";
+
+        typeData.projects.forEach(project=>{
+
+            // =====================
+            // PROJECT
+            // =====================
+
+            projectsEl.insertAdjacentHTML(
+                "beforeend",
+                createProject(
+                    project.id,
+                    project.project_id
+                )
+            );
+
+            const projectEl =
+                projectsEl.lastElementChild;
+
+            const tasksEl =
+                projectEl.querySelector(".tasks");
+
+            // =====================
+            // TASKS
+            // =====================
+
+            project.tasks.forEach(task=>{
+
+                tasksEl.insertAdjacentHTML(
+                    "beforeend",
+                    createTask(
+                        project.project_id,
+                        task.id,
+                        task.task_id,
+                        task.percent,
+                        task.time
+                    )
+                );
+
+                const taskEl =
+                    tasksEl.lastElementChild;
+
+                const worksEl =
+                    taskEl.querySelector(".works");
+
+                // =====================
+                // WORKS
+                // =====================
+
+                task.works.forEach(work=>{
+
+                    worksEl.insertAdjacentHTML(
+                        "beforeend",
+                        createWork(
+                            work.id,
+                            work.work_id,
+                            work.status
+                        )
+                    );
+
+                });
+
+            });
+
+        });
+
+    });
+
+}
+
+renderEditData(editData);
 
 
 // =====================================
@@ -393,14 +550,9 @@ document.addEventListener("change",function(e){
         project.querySelectorAll(".task")
         .forEach(task=>{
 
-            resetTask(task);
+            task.dataset.taskId = "";
 
-            task.querySelectorAll(".work")
-            .forEach(work=>{
-
-                resetWork(work);
-
-            });
+            task.querySelector(".task-select").value = "";
 
         });
 
@@ -489,13 +641,14 @@ document.addEventListener("click",function(e){
         const project =
             e.target.closest(".project");
 
+        const projectId =
+            project.dataset.projectId;
+
         project.querySelector(".tasks")
         .insertAdjacentHTML(
             "beforeend",
-            createTask()
+            createTask(projectId)
         );
-
-        loadTaskOptions(project);
     }
 
 
@@ -579,6 +732,9 @@ function getData(){
 
                 return {
 
+                    id:
+                        project.dataset.id,
+
                     project_id:
                         project.dataset.projectId,
 
@@ -589,6 +745,9 @@ function getData(){
                     ).map(task=>{
 
                         return {
+
+                            id:
+                                task.dataset.id,
 
                             task_id:
                                 task.dataset.taskId,
@@ -606,6 +765,9 @@ function getData(){
                             ).map(work=>{
 
                                 return {
+
+                                    id:
+                                        work.dataset.id,
 
                                     work_id:
                                         work.dataset.workId,
